@@ -16,20 +16,22 @@
 struct cRGB colors[8];
 struct cRGB kirmes[2];
 struct cRGB led[MAXPIX];
+uint8_t mode = 0;
+
 uint8_t j = 1; //wtf
 uint8_t k = 1; //wtf warum mach ich sowas?
 
-void shiftUp()
+
+
+void shiftUp() //shift all values one led up
 {
-    //shift all values by one led up
         uint8_t i=0;           
         for(i=MAXPIX; i>1; i--) 
             led[i-1]=led[i-2];
 }
 
-void shiftDown()
-{
-    //shift all values by one led down
+void shiftDown() //shift all values one led down
+{    
         uint8_t i=MAXPIX;           
         for(i=0; i>1; i++) 		
             led[i+1]=led[i+2];
@@ -114,6 +116,7 @@ void kirmesFoo()
 int main(void)
 {
 	DDRB|=_BV(ws2812_pin);
+	PORTA|=_BV(PA1);
 
     //init all leds black		
     uint8_t i;
@@ -139,8 +142,18 @@ int main(void)
 
     while(1)
     {
-	rainbowFade();
-	//kirmesFoo();	
+	if(mode==0)
+		rainbowFade();
+	if(mode==1)
+		kirmesFoo();
+
+	if(!(PINA &(_BV(PA1))))
+	{
+		mode++;
+		_delay_ms(50);
+	}
+	if(mode>1)
+		mode=0;	
     }
 }
 
