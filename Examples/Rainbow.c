@@ -42,6 +42,22 @@ void paint()
 	ws2812_sendarray((uint8_t *)led,MAXPIX*3);
 }
 
+void blackFade()
+{   
+	uint8_t i;
+	for(i=0; i<MAXPIX; i++)
+{
+        if(led[i].r>0)
+            led[i].r--;
+	if(led[i].g>0)
+            led[i].g--;
+	if(led[i].b>0)
+            led[i].b--;
+}
+	 _delay_ms(1);										
+	paint();
+}
+
 void rainbowFade()
 {
 	shiftUp();
@@ -59,7 +75,7 @@ void rainbowFade()
         //fade red
         if(led[0].r<colors[j].r)
             led[0].r+=FADE;
-        if(led[0].r>255.r)
+        if(led[0].r>255)
             led[0].r=255;
             
         if(led[0].r>colors[j].r)
@@ -146,13 +162,15 @@ int main(void)
 		rainbowFade();
 	if(mode==1)
 		kirmesFoo();
+	if(mode==2)
+		blackFade();
 
 	if(!(PINA &(_BV(PA1))))
 	{
 		mode++;
 		_delay_ms(50);
 	}
-	if(mode>1)
+	if(mode>2)
 		mode=0;	
     }
 }
