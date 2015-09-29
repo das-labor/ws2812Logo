@@ -12,12 +12,15 @@
 #define COLORLENGTH 100
 #define FADE 5
 #define KIRMESDELAY 50
-#define SPFDELAY 50
+#define SPFDELAY 10
 
 struct cRGB colors[8];
 struct cRGB kirmes[2];
 struct cRGB led[MAXPIX];
 uint8_t mode = 0;
+
+
+
 
 uint8_t j = 1; //wtf
 uint8_t k = 1; //wtf warum mach ich sowas?
@@ -133,20 +136,33 @@ void kirmesFoo()
 void singlePixelFlow()
 {
 	led[0].r=kirmes[0].r; led[0].g=kirmes[0].g; led[0].b=kirmes[0].b;
-	shiftUp(); paint();
-	_delay_ms(SPFDELAY);
-	if(led[0].r>0)
-		led[0].r--;
-	if(led[0].g>0)
-		led[0].g--;
-	if(led[0].b>0)
-		led[0].b--;
+	uint8_t i;
+	for(i=0; i<=50;i++)
+	{
+		shiftUp(); paint();
+		//_delay_ms(SPFDELAY);
+		if(led[0].r>0)
+			led[0].r-=5;
+		if(led[0].g>0)
+			led[0].g-=5;
+		if(led[0].b>0)
+			led[0].b-=5;
+	}
+	for(i=51; i<MAXPIX;i++)
+	{
+		shiftUp(); paint();
+	}
 }
 
 int main(void)
 {
 	DDRB|=_BV(ws2812_pin);
 	PORTA|=_BV(PA1);
+	
+	//Timer (5ms)
+	TCCR0 = (1<<CS02) | (1<<CS00) | (1<<WGM01);
+	OCR0=78;
+	sei();
 
     //init all leds black		
     uint8_t i;
@@ -184,7 +200,7 @@ int main(void)
 	if(!(PINA &(_BV(PA1))))
 	{
 		mode++;
-		_delay_ms(50);
+		_delay_ms(100);
 	}
 	if(mode>3)
 		mode=0;	
