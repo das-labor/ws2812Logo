@@ -18,10 +18,6 @@ struct cRGB colors[8];
 struct cRGB kirmes[2];
 struct cRGB led[MAXPIX];
 uint8_t mode = 0;
-
-
-
-
 uint8_t j = 1; //wtf
 uint8_t k = 1; //wtf warum mach ich sowas?
 
@@ -158,10 +154,14 @@ int main(void)
 {
 	DDRB|=_BV(ws2812_pin);
 	PORTA|=_BV(PA1);
+
+	DDRD|=_BV(PD6);
+	
 	
 	//Timer (5ms)
 	TCCR0 = (1<<CS02) | (1<<CS00) | (1<<WGM01);
 	OCR0=78;
+	TIMSK|= (1<<OCIE0);
 	sei();
 
     //init all leds black		
@@ -205,7 +205,12 @@ int main(void)
 	if(mode>3)
 		mode=0;	
     }
+	
 }
+ISR (TIMER0_COMP_vect)
+    {
+      PORTD|=_BV(PD6);
+    }
 
 
 
