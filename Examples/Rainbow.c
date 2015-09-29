@@ -12,6 +12,7 @@
 #define COLORLENGTH 100
 #define FADE 5
 #define KIRMESDELAY 50
+#define SPFDELAY 50
 
 struct cRGB colors[8];
 struct cRGB kirmes[2];
@@ -129,6 +130,19 @@ void kirmesFoo()
 	_delay_ms(KIRMESDELAY);
 }
 
+void singlePixelFlow()
+{
+	led[0].r=kirmes[0].r; led[0].g=kirmes[0].g; led[0].b=kirmes[0].b;
+	shiftUp(); paint();
+	_delay_ms(SPFDELAY);
+	if(led[0].r>0)
+		led[0].r--;
+	if(led[0].g>0)
+		led[0].g--;
+	if(led[0].b>0)
+		led[0].b--;
+}
+
 int main(void)
 {
 	DDRB|=_BV(ws2812_pin);
@@ -164,13 +178,15 @@ int main(void)
 		kirmesFoo();
 	if(mode==2)
 		blackFade();
+	if(mode==3)
+		singlePixelFlow();
 
 	if(!(PINA &(_BV(PA1))))
 	{
 		mode++;
 		_delay_ms(50);
 	}
-	if(mode>2)
+	if(mode>3)
 		mode=0;	
     }
 }
