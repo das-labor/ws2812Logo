@@ -200,15 +200,13 @@ int main(void)
 	if(mode==0)
 		rainbowFade();
 	if(mode==1)
-		kirmesFoo();
+		blackFade();
 	if(mode==2)
 		singlePixelFlow();
 	if(mode==3)
 		white();
 	if(mode==4)
-		blackFade();
-
-		
+		kirmesFoo();	
     }
 	
 }
@@ -223,7 +221,7 @@ ISR (TIMER0_COMP_vect)
 		mode++;
 		_delay_ms(500);
 	}
-	if(mode>3)
+	if(mode>4)
 		mode=0;
 	
 	
