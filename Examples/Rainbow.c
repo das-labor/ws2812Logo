@@ -108,7 +108,7 @@ void rainbowFade()
 }
 
 void kirmesFoo()
-{
+{	
 	led[0].r=kirmes[0].r; led[0].g=kirmes[0].g; led[0].b=kirmes[0].b;
 	shiftUp(); paint();
 	led[0].r=kirmes[0].r; led[0].g=kirmes[0].g; led[0].b=kirmes[0].b;
@@ -181,7 +181,7 @@ int main(void)
     }
 		
     //Rainbowcolors
-    colors[0].r=150; colors[0].g=150; colors[0].b=150;//white(59% brightness)
+    colors[0].r=255; colors[0].g=255; colors[0].b=255;//white
     colors[1].r=255; colors[1].g=000; colors[1].b=000;//red
     colors[2].r=255; colors[2].g=100; colors[2].b=000;//orange
     colors[3].r=100; colors[3].g=255; colors[3].b=000;//yellow
