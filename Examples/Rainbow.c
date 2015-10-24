@@ -7,6 +7,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "light_ws2812.h"
+#include <stdbool.h>
 
 #define MAXPIX 253
 #define COLORLENGTH 100
@@ -17,9 +18,11 @@
 struct cRGB colors[8];
 struct cRGB kirmes[2];
 struct cRGB led[MAXPIX];
-uint8_t mode = 0;
+uint8_t mode = 2;
 uint8_t j = 1; //wtf
 uint8_t k = 1; //wtf warum mach ich sowas?
+uint8_t pixcount=0;
+bool pixbool;
 
 
 
@@ -129,25 +132,29 @@ void kirmesFoo()
 	_delay_ms(KIRMESDELAY);
 }
 
-void singlePixelFlow()
+void singlePixelFlow(bool newPixel)
 {
-	led[0].r=kirmes[0].r; led[0].g=kirmes[0].g; led[0].b=kirmes[0].b;
-	uint8_t i;
-	for(i=0; i<=50;i++)
+	_delay_ms(20);//debug delay, remove before congress
+	if(newPixel == true)
 	{
-		shiftUp(); paint();
-		//_delay_ms(SPFDELAY);
-		if(led[0].r>0)
-			led[0].r-=5;
-		if(led[0].g>0)
-			led[0].g-=5;
-		if(led[0].b>0)
-			led[0].b-=5;
+		led[0].r=kirmes[0].r; led[0].g=kirmes[0].g; led[0].b=kirmes[0].b;
 	}
-	for(i=51; i<MAXPIX;i++)
-	{
-		shiftUp(); paint();
-	}
+	if(led[0].r>0)
+		led[0].r-=5;
+	if(led[0].g>0)
+		led[0].g-=5;
+	if(led[0].b>0)
+		led[0].b-=5;
+	led[104].r=000; led[104].g=000; led[104].b=000;
+	led[189]=led[68];
+	led[229]=led[193];
+	led[210]=led[198];
+	led[208].r=000; led[208].g=000; led[208].b=000;
+	led[220].r=000; led[104].g=000; led[104].b=000;
+	
+	shiftUp(); paint();
+	
+	
 }
 void white()
 {
@@ -197,12 +204,26 @@ int main(void)
 
     while(1)
     {
+	
 	if(mode==0)
 		rainbowFade();
 	if(mode==1)
 		blackFade();
 	if(mode==2)
-		singlePixelFlow();
+	{	
+		pixcount++;
+		if(pixcount>=104)
+		{
+			pixcount=0;
+			singlePixelFlow(true);
+		}
+		else
+		{
+			singlePixelFlow(false);
+		}
+		
+		
+	}
 	if(mode==3)
 		white();
 	if(mode==4)
