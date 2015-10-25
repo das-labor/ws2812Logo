@@ -146,12 +146,56 @@ void singlePixelFlow(bool newPixel)
 	if(led[0].b>0)
 		led[0].b-=5;
 	led[104].r=000; led[104].g=000; led[104].b=000;
-	led[189]=led[68];
+	//led65 ist die letzte led unter dem i
+	//led 189 ist die erste led vom Platinenteil
+	led[189]=led[65];
+	led[152]=led[65];
 	led[229]=led[193];
 	led[210]=led[198];
+
+	//rechter teil der i-punktes(innerer streifen rechts)
+	led[114]=led[92];
+	led[115]=led[94];
+	led[116]=led[96];
+	led[117]=led[98];
+	led[118]=led[100];
+	led[119]=led[102];
+	led[120]=led[104];
+	//rechter teil der i(äußerer streifen rechts)
+	uint8_t i;
+	for(i=0; i<23; i++)
+	{
+		led[151-i]=led[152+i];
+	}
+	//mittlerer Teil des i(streifen nach rechts leuchtend)
+	for(i=0; i<16; i++)
+	{
+		led[188-i]=led[156+i];
+	}
+	//rechter teil des i-Punktes, Streifen nach links leuchtend
+	uint8_t K=3;
+	led[104]=led[102-K];
+	led[105]=led[101-K];
+	led[106]=led[100-K];
+	led[107]=led[99-K];
+	led[108]=led[98-K];
+	led[109]=led[97-K];
+	led[110]=led[96-K];
+	led[111]=led[95-K];
+	led[112]=led[94-K];
+
+	//rechter teil des i-Punktes, Streifen nach rechts leuchtend
+
+	
+	//letztes pixel der rechten Hälfte: 188
+
+
+
 	led[208].r=000; led[208].g=000; led[208].b=000;
 	led[220].r=000; led[104].g=000; led[104].b=000;
-	
+	led[175].r=000; led[104].g=000; led[104].b=000;
+	//led[119].b=255;
+	//led[102].g=255;
 	shiftUp(); paint();
 	
 	
@@ -204,6 +248,7 @@ int main(void)
 
     while(1)
     {
+	
 	
 	if(mode==0)
 		rainbowFade();
