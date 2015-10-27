@@ -278,10 +278,6 @@ int main(void)
 }
 ISR (TIMER0_COMP_vect)
 {
-	//if(!(PIND &(_BV(PD6))))
-      	//	PORTD|= _BV(PD6);
-	//else
-	//	PORTD &= ~(_BV(PD6));
 	if(!(PINA &(_BV(PA1))))
 	{
 		mode++;
@@ -292,6 +288,7 @@ ISR (TIMER0_COMP_vect)
 	
 	
 }
+
 
 
 
