@@ -12,8 +12,7 @@
 #define MAXPIX 253
 #define COLORLENGTH 100
 #define FADE 5
-#define KIRMESDELAY 50
-#define SPFDELAY 10
+
 
 struct cRGB colors[8];
 struct cRGB kirmes[2];
@@ -118,7 +117,7 @@ void kirmesFoo()
 	led[0].r=kirmes[0].r; led[0].g=kirmes[0].g; led[0].b=kirmes[0].b;
 	shiftUp(); paint();
 
-	_delay_ms(KIRMESDELAY);//remove before congress
+	_delay_ms(50);//remove before congress
 
 	led[0].r=kirmes[1].r; led[0].g=kirmes[1].g; led[0].b=kirmes[1].b;
 	shiftUp(); paint();
@@ -129,11 +128,11 @@ void kirmesFoo()
 	shiftUp(); paint();
 }
 
-void singlePixelFlow(bool newPixel)
+void pixelFlow(bool newPixel, uint8_t red, uint8_t green, uint8_t blue)
 {
 	if(newPixel == true)
 	{
-		led[0].r=kirmes[0].r; led[0].g=kirmes[0].g; led[0].b=kirmes[0].b;
+		led[0].r=red; led[0].g=green; led[0].b=blue;
 	}
 	if(led[0].r>0)
 		led[0].r-=5;
@@ -149,7 +148,7 @@ void singlePixelFlow(bool newPixel)
 	led[229]=led[193];
 	led[210]=led[198];
 
-	//rechter teil der i-punktes(innerer streifen rechts)
+	//rechter teil der i-punktes(innerer Streifen rechts)
 	led[114]=led[92];
 	led[115]=led[94];
 	led[116]=led[96];
@@ -157,13 +156,13 @@ void singlePixelFlow(bool newPixel)
 	led[118]=led[100];
 	led[119]=led[102];
 	led[120]=led[104];
-	//rechter teil der i(äußerer streifen rechts)
+	//rechter teil der i(äußerer Streifen rechts)
 	uint8_t i;
 	for(i=0; i<23; i++)
 	{
 		led[151-i]=led[152+i];
 	}
-	//mittlerer Teil des i(streifen nach rechts leuchtend)
+	//mittlerer Teil des i(Streifen nach rechts leuchtend)
 	for(i=0; i<16; i++)
 	{
 		led[188-i]=led[156+i];
@@ -247,27 +246,31 @@ int main(void)
 	
 	if(counter==4 && mode==0)//entspricht 20ms
 		rainbowFade();
-
-	if(mode==1)
+ 	else if(mode==1)
 		blackFade();
-	if(mode==2)
+	else if(mode==2 || mode==3 || mode==4)
 	{	
 		pixcount++;
 		if(pixcount>=104)
 		{
 			pixcount=0;
-			singlePixelFlow(true);
+			if(mode==2)
+				pixelFlow(true, 255, 0, 0);
+			else if (mode==3)
+				pixelFlow(true, 0, 255, 0);
+			else 
+				pixelFlow(true, 0, 0, 255);
 		}
 		else
 		{
-			singlePixelFlow(false);
+			pixelFlow(false, 0, 0 , 0);
 		}
 		
 		
 	}
-	if(mode==3)
+	else if(mode==5)
 		white();
-	if(counter==10 && mode==4)//entspricht 50ms
+	else if(counter==10 && mode==6)//entspricht 50ms
 		kirmesFoo();
 
 	if(!(PINA &(_BV(PA1))))
@@ -275,7 +278,7 @@ int main(void)
 		mode++;
 		_delay_ms(400);
 	}
-	if(mode>4)
+	if(mode>6)
 		mode=0;	
     }
 	
