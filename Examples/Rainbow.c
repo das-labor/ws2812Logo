@@ -23,6 +23,7 @@ uint8_t j = 1; //wtf
 uint8_t k = 1; //wtf warum mach ich sowas?
 uint8_t pixcount=0;
 bool pixbool;
+uint8_t counter;
 
 
 
@@ -49,15 +50,14 @@ void blackFade()
 {   
 	uint8_t i;
 	for(i=0; i<MAXPIX; i++)
-{
-        if(led[i].r>0)
-            led[i].r--;
-	if(led[i].g>0)
-            led[i].g--;
-	if(led[i].b>0)
-            led[i].b--;
-}
-	 _delay_ms(1);										
+	{
+        	if(led[i].r>0)
+            	led[i].r--;
+		if(led[i].g>0)
+            	led[i].g--;
+		if(led[i].b>0)
+        	    led[i].b--;
+	}									
 	paint();
 }
 
@@ -105,8 +105,7 @@ void rainbowFade()
             led[0].b-=FADE;
     //    if(led[0].b<0)
     //        led[0].b=0;
-
-		 _delay_ms(20);										
+										
 		 paint();
 }
 
@@ -119,7 +118,7 @@ void kirmesFoo()
 	led[0].r=kirmes[0].r; led[0].g=kirmes[0].g; led[0].b=kirmes[0].b;
 	shiftUp(); paint();
 
-	_delay_ms(KIRMESDELAY);
+	_delay_ms(KIRMESDELAY);//remove before congress
 
 	led[0].r=kirmes[1].r; led[0].g=kirmes[1].g; led[0].b=kirmes[1].b;
 	shiftUp(); paint();
@@ -128,13 +127,10 @@ void kirmesFoo()
 
 	led[1].r=0; led[1].g=0; led[1].b=0;//insert one black led
 	shiftUp(); paint();
-
-	_delay_ms(KIRMESDELAY);
 }
 
 void singlePixelFlow(bool newPixel)
 {
-	_delay_ms(20);//debug delay, remove before congress
 	if(newPixel == true)
 	{
 		led[0].r=kirmes[0].r; led[0].g=kirmes[0].g; led[0].b=kirmes[0].b;
@@ -249,9 +245,9 @@ int main(void)
     while(1)
     {
 	
-	
-	if(mode==0)
+	if(counter==4 && mode==0)//entspricht 20ms
 		rainbowFade();
+
 	if(mode==1)
 		blackFade();
 	if(mode==2)
@@ -271,21 +267,24 @@ int main(void)
 	}
 	if(mode==3)
 		white();
-	if(mode==4)
-		kirmesFoo();	
-    }
-	
-}
-ISR (TIMER0_COMP_vect)
-{
+	if(counter==10 && mode==4)//entspricht 50ms
+		kirmesFoo();
+
 	if(!(PINA &(_BV(PA1))))
 	{
 		mode++;
-		_delay_ms(500);
+		_delay_ms(400);
 	}
 	if(mode>4)
-		mode=0;
+		mode=0;	
+    }
 	
+}
+ISR (TIMER0_COMP_vect)//soll alle 5ms ausgeführt werden
+{
+	counter++;
+	if(counter>20)
+		counter=0;	
 	
 }
 
