@@ -24,17 +24,6 @@ LDFLAGS = -Wl,--relax,--section-start=.text=0,-Map=main.map
 
 all:	$(TARGET).hex 
 
-#$(LIB): $(DEP:=.o)
-#	@echo Building Library 
-#	@$(CC) $(CFLAGS) -o Objects/$@.o -c Light_WS2812/$@.c
-
-#$(EXAMPLES): $(LIB) $(DEP:=.o) 
-#	@echo Building $@
-#	@$(CC) $(CFLAGS) -o Objects/$@.o $@.c Light_WS2812/$^.c
-#	@avr-size Objects/$@.o
-#	@avr-objcopy -j .text  -j .data -O ihex Objects/$@.o $@.hex
-#	@avr-objdump -d -S Objects/$@.o >Objects/$@.lss
-
 flash: $(TARGET).hex
 	avrdude -U flash:w:$(TARGET).hex:i -v -p $(MMCU) -b 57600 -c $(PROG) -P $(PROG_PORT)
 
