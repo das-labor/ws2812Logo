@@ -1,39 +1,53 @@
 # Makefile to build light_ws2812 library examples
-# This is not a very good example of a makefile - the dependencies do not work, therefore everything is rebuilt every time.
-
 # Change these parameters for your device
 
 F_CPU = 16000000
-DEVICE = atmega32
+MMCU = atmega32
+PROG=usbasp
+PROG_PORT=usb
 
 # Tools:
+FORMAT=ihex
+OBJCOPY=avr-objcopy
+OBJSIZE=avr-size
 CC = avr-gcc
 
-LIB       = light_ws2812
-EXAMPLES  = Rainbow 
-DEP		  = ws2812_config.h Light_WS2812/light_ws2812.h
+TARGET    = Rainbow
+DEP	  = Light_WS2812/light_ws2812 animationen
 
-CFLAGS = -g2 -I. -ILight_WS2812 -mmcu=$(DEVICE) -DF_CPU=$(F_CPU) 
+CFLAGS = -g2 -I. -ILight_WS2812 -mmcu=$(MMCU) -DF_CPU=$(F_CPU) 
 CFLAGS+= -Os -ffunction-sections -fdata-sections -fpack-struct -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions  
 CFLAGS+= -Wall -Wno-pointer-to-int-cast
 #CFLAGS+= -Wa,-ahls=$<.lst
 
 LDFLAGS = -Wl,--relax,--section-start=.text=0,-Map=main.map
 
-all:	$(EXAMPLES) 
+all:	$(TARGET).hex 
 
-$(LIB): $(DEP)
-	@echo Building Library 
-	@$(CC) $(CFLAGS) -o Objects/$@.o -c Light_WS2812/$@.c 
+#$(LIB): $(DEP:=.o)
+#	@echo Building Library 
+#	@$(CC) $(CFLAGS) -o Objects/$@.o -c Light_WS2812/$@.c
 
-$(EXAMPLES): $(LIB) 
-	@echo Building $@
-	@$(CC) $(CFLAGS) -o Objects/$@.o Examples/$@.c Light_WS2812/$^.c
-	@avr-size Objects/$@.o
-	@avr-objcopy -j .text  -j .data -O ihex Objects/$@.o $@.hex
-	@avr-objdump -d -S Objects/$@.o >Objects/$@.lss
+#$(EXAMPLES): $(LIB) $(DEP:=.o) 
+#	@echo Building $@
+#	@$(CC) $(CFLAGS) -o Objects/$@.o $@.c Light_WS2812/$^.c
+#	@avr-size Objects/$@.o
+#	@avr-objcopy -j .text  -j .data -O ihex Objects/$@.o $@.hex
+#	@avr-objdump -d -S Objects/$@.o >Objects/$@.lss
 
-.PHONY:	clean
+flash: $(TARGET).hex
+	avrdude -U flash:w:$(TARGET).hex:i -v -p $(MMCU) -b 57600 -c $(PROG) -P $(PROG_PORT)
+
+%.hex: %.elf
+	$(OBJCOPY) -O $(FORMAT) -R .eeprom $< $@
+
+%.elf: %.o $(DEP:=.o)
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ --output $@
+	$(OBJSIZE) --format=avr --mcu=$(MMCU) $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+PHONY:	clean
 
 clean:
-	rm -f *.hex Objects/*.o Objects/*.lss
+	rm -f $(TARGET).hex $(TARGET).o $(DEP:=.o) $(TARGET).lss $(TARGET).elf
