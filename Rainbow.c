@@ -87,7 +87,6 @@ int main(void)
 
     	while(1)
     	{
-	
 		if(counter>=4 && mode==0)//entspricht 20ms
 		{
 			rainbowFade();
@@ -132,7 +131,7 @@ int main(void)
     	}
 	
 }
-ISR (TIMER0_COMP_vect)//soll alle 5ms ausgeführt werden
+ISR (TIMER0_COMP_vect)//jede 5ms
 {
 	counter++;
 }
