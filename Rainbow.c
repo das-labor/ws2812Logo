@@ -28,6 +28,38 @@ void shiftUp() //shift all values one led up
             led[i-1]=led[i-2];
 }
 
+void fadeUp() //shift all values one led up
+{
+        uint8_t i=0;           
+        for(i=MAXPIX; i>1; i--) 
+        {
+		//fade red
+		if(led[i-1].r<(colors[i-2].r-FADE))
+			led[i-1].r+=FADE;
+		else if(led[i-1].r>(colors[i-2].r+FADE))
+			led[i-1].r-=FADE;
+		else
+			led[i-1]=led[i-2];
+		
+		//fade green
+		if(led[i-1].g<(colors[i-2].g-FADE))
+			led[i-1].g+=FADE;
+		else if(led[i-1].g>(colors[i-2].g+FADE))
+			led[i-1].g-=FADE;
+		else
+			led[i-1]=led[i-2];
+
+		//fade blue
+		if(led[i-1].b<(colors[i-2].b-FADE))
+			led[i-1].b+=FADE;
+		else if(led[i-1].b>(colors[i-2].b+FADE))
+			led[i-1].b-=FADE;
+		else
+			led[i-1]=led[i-2];
+	}
+
+}
+
 void shiftDown() //shift all values one led down
 {    
         uint8_t i=MAXPIX;           
@@ -44,8 +76,6 @@ void paint()
 int main(void)
 {
 	mode = 2;
-	j = 1;
-	k = 1;
 	pixcount = 0;
 
 	DDRB|=_BV(ws2812_pin);
@@ -87,14 +117,17 @@ int main(void)
 
     	while(1)
     	{
-		if(counter>=4 && mode==0)//entspricht 20ms
+		if(mode==0)
 		{
-			rainbowFade();
+			if(counter>=4)//alle 20ms wird geschoben
+				rainbowFade(true);
+			else
+				rainbowFade(false);
 			counter-=4;		
 		} 		
 		else if(mode==1)
 			blackFade();
-		else if((mode==2 || mode==3 || mode==4) && counter >= 2)
+		else if((mode==2 || mode==3 || mode==4) && counter >= 2)//10ms
 		{	
 			pixcount++;
 			if(pixcount>=104)

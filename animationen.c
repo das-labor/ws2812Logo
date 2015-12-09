@@ -6,8 +6,8 @@
 #define FADE 5
 
 //für rainbowFade() benötigt
- uint8_t j; //remove before congress
- uint8_t k; //remove before congress
+ uint8_t j=1; //remove before congress
+ uint8_t k=1; //remove before congress
 
 
 	
@@ -129,9 +129,10 @@ void white()
 	paint();
 }
 
-void rainbowFade()
+void rainbowFade(bool shift)
 {
-	shiftUp();
+	fadeUp();
+
         //change colour when colourlength is reached   
         if(k>COLORLENGTH)
         {
@@ -176,7 +177,7 @@ void rainbowFade()
         if(led[0].b<FADE)
             led[0].b=0;
 							
-		 paint();//TODO fade funktion
+	paint();//TODO fade funktion
 }
 
 

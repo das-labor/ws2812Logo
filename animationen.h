@@ -10,15 +10,12 @@
 
 extern struct cRGB colors[8];
 extern struct cRGB led[MAXPIX];
-extern uint8_t mode; 
-extern uint8_t j; //remove before congress
-extern uint8_t k; //remove before congress
 extern uint8_t pixcount;
 
 
 void blackFade(void);
 void kirmesFoo(void);
-void rainbowFade(void);
+void rainbowFade(bool shift);
 void white(void);
 void pixelFlow(bool newPixel, uint8_t red, uint8_t green, uint8_t blue);
 #endif
