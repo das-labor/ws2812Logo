@@ -12,15 +12,18 @@ OBJCOPY=avr-objcopy
 OBJSIZE=avr-size
 CC = avr-gcc
 
-TARGET    = Rainbow
-DEP	  = Light_WS2812/light_ws2812 animationen
+TARGET    = main
+# Rainbow
+
+DEP	  = Light_WS2812/light_ws2812
+# animationen
 
 CFLAGS = -g2 -I. -ILight_WS2812 -mmcu=$(MMCU) -DF_CPU=$(F_CPU) 
 CFLAGS+= -Os -ffunction-sections -fdata-sections -fpack-struct -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions  
 CFLAGS+= -Wall -Wno-pointer-to-int-cast
 #CFLAGS+= -Wa,-ahls=$<.lst
 
-LDFLAGS = -Wl,--relax,--section-start=.text=0,-Map=main.map
+LDFLAGS = -Wl,--relax,--section-start=.text=0,-Map=main.map -lm
 
 all:	$(TARGET).hex 
 
